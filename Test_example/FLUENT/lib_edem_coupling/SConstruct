@@ -1,0 +1,47 @@
+from __future__ import print_function
+import os
+import fluent_utils
+
+
+USER_OBJECTS = ARGUMENTS.get("USER_OBJECTS","")
+USER_OBJECT_PATH = ARGUMENTS.get("USER_OBJECT_PATH","")
+USER_LIBRARIES = ARGUMENTS.get("USER_LIBRARIES","")
+USER_LIBRARY_PATH = ARGUMENTS.get("USER_LIBRARY_PATH","")
+USER_INCLUDE_PATH = ARGUMENTS.get("USER_INCLUDE_PATH","")
+USER_CCFLAGS = ARGUMENTS.get("USER_CCFLAGS","")
+
+
+#Import("*")
+
+Fluent_arch = fluent_utils.fluent_arch()
+Fluent_Inc = os.environ["FLUENT_INC"]
+Fluent_release = fluent_utils.fluent_release(fluent_dir=Fluent_Inc)
+
+
+dim_opts = ARGUMENTS.get("dimensions","2d,3d").split(",")
+precision_opts = ARGUMENTS.get("precision","single,double").replace("single","").replace("sp","").replace("double","dp").split(",")
+serial_parallel_opts = ARGUMENTS.get("serial_parallel","serial,parallel").replace("serial","").replace("parallel","_host,_node").split(",")
+
+Fluent_versions = ARGUMENTS.get("versions","all").split(",") # Direct specification of versions in 2d,2ddp,3ddp_host,3ddp_node form. Default "all"
+
+if "all" in Fluent_versions:
+    Fluent_versions = [dim+precision+para for dim in dim_opts for precision in precision_opts for para in serial_parallel_opts]
+
+
+print("Release "+Fluent_release+" for "+Fluent_arch)
+print("Fluent installation "+Fluent_Inc)
+
+if COMMAND_LINE_TARGETS:
+    udf_libs = COMMAND_LINE_TARGETS
+else:
+    udf_libs = ["."]
+
+
+for libudf in udf_libs:
+
+
+    for Fluent_version in Fluent_versions:
+        
+        Export("Fluent_Inc Fluent_release Fluent_arch Fluent_version USER_OBJECTS USER_OBJECT_PATH USER_LIBRARIES USER_LIBRARY_PATH USER_INCLUDE_PATH USER_CCFLAGS")
+        
+        SConscript(os.path.join(libudf,"src","SConscript"), variant_dir=os.path.join(libudf,Fluent_arch,Fluent_version), duplicate=0)

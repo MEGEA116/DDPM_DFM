@@ -1,0 +1,17 @@
+;;
+;; Scheme/journal file to load EDEM coupling model into Fluent
+;;
+
+(let ((udf-lib-name "lib_edem_coupling"))
+  (if (member udf-lib-name (rpgetvar 'udf/libname))
+      (begin
+        (%udf-on-demand (string->symbol (format #f "disconnect_edem_coupling::~a"  udf-lib-name)))
+        (close-udf-library udf-lib-name #t)
+        ))
+
+  (open-udf-library udf-lib-name #t)
+
+  (if (and (rp-var-object 'edem/connected?) (rpgetvar 'edem/connected?))
+      (%udf-on-demand (string->symbol (format #f "connect_edem_coupling::~a"  udf-lib-name)))
+      )
+  )

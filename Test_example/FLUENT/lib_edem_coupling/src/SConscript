@@ -1,0 +1,189 @@
+from __future__ import print_function
+import os
+import fluent_utils
+
+Import("Fluent_Inc Fluent_release Fluent_arch Fluent_version USER_OBJECTS USER_OBJECT_PATH USER_LIBRARIES USER_LIBRARY_PATH USER_INCLUDE_PATH USER_CCFLAGS")
+
+using_mingw = False
+
+if Fluent_arch in ["win64"]:
+   env = Environment(tools=['mingw'])
+   using_mingw = True
+else:
+   env = Environment()
+
+
+if Fluent_arch in ["lnx86","lnamd64","lnia64","gcc","gcc64"]:
+   env.Append(CCFLAGS = "-Wall -O")
+
+if Fluent_arch in ["lnx86"]:
+   env.Append(CCFLAGS = "-m32")
+
+if Fluent_arch in ["lnamd64","lnia64","gcc","gcc64"]:
+   env.Append(CPPDEFINES = {"PTR_RESTRICT":''})
+   env.Append(CPPDEFINES =["_lnamd64","_GNU_SOURCE"])
+
+if Fluent_arch in ["gcc64"]:
+   env.Append(CCFLAGS = "-m64")
+
+if Fluent_arch in ["win64"]:
+   env.Append(CPPDEFINES =["sys_win64"])
+   if using_mingw:
+#      env.Append(CCFLAGS = "-m64")
+      env.Append(CPPDEFINES =["_MINGW"])  # Add #ifndef _MINGW around lines in sys_master.h :#pragma (lines 1439-1441) and #define cbrt (line 1462)
+      env.Append(CPPDEFINES =["LIBSSH_STATIC"])  # This is to make the names without _imp__ at start
+      env.Append(CCFLAGS = "-Wall -O")
+      env.Append(CPPDEFINES = {"PTR_RESTRICT":''})
+      env["SHLIBSUFFIX"] = ".dll"
+
+Fluent_path = os.path.join(Fluent_Inc,Fluent_release)
+Fluent_version_path = os.path.join(Fluent_path, Fluent_arch, Fluent_version)
+
+Cortex_path = os.path.join(Fluent_Inc,Fluent_release,"cortex")
+Cortex_version_path = os.path.join(Cortex_path,Fluent_arch)
+
+
+env.Append(CPPPATH = ["."])
+env.Append(CPPPATH = [Fluent_version_path])
+env.Append(CPPPATH = [os.path.join(Fluent_path, "src")])
+env.Append(CPPPATH = [Cortex_version_path])
+env.Append(CPPPATH = [os.path.join(Cortex_path, "src")])
+
+# Fluent source directory now has sub directories so add them to path if they exist
+fl_dirs = [d for d in Glob(os.path.join(Fluent_path, "src","*")) if d.isdir()]
+if fl_dirs:
+   env.Append(CPPPATH = fl_dirs)
+
+env.Append(CPPPATH = [os.path.join(Fluent_path, "cortex", "src")])
+env.Append(CPPPATH = [os.path.join(Fluent_path, "client", "src")])
+env.Append(CPPPATH = [os.path.join(Fluent_path, "tgrid", "src")])
+env.Append(CPPPATH = [os.path.join(Fluent_path, "multiport", "src")])
+env.Append(CPPPATH = [os.path.join(Fluent_path, "multiport", "mpi_wrapper", "include")])
+env.Append(CPPPATH = [os.path.join(Fluent_path, "multiport", "mpi_wrapper", "src")])
+
+
+
+if USER_OBJECTS:
+   USER_OBJECTS = USER_OBJECTS.strip('"').split(":")
+else:
+   USER_OBJECTS = []
+
+# Add any local object files found in arch/obj directory
+USER_OBJECTS += Glob("../obj/*"+env["SHOBJSUFFIX"])
+
+# Any object files found in USER_OBJECT_PATH diretories
+if USER_OBJECT_PATH:
+   user_object_dirs = USER_OBJECT_PATH.strip('"').split(":")
+   for d in user_object_dirs:
+      USER_OBJECTS += Glob(d+"/*"+env["SHOBJSUFFIX"])
+
+
+
+if USER_LIBRARIES:
+   USER_LIBRARIES = USER_LIBRARIES.strip('"').split(":")
+else:
+   USER_LIBRARIES = []
+
+# Add any local library files found in arch/lib directory
+USER_LIBRARIES += Glob("../lib/*"+env["SHLIBSUFFIX"])
+
+# Any library files found in USER_LIBRARY_PATH diretories
+if USER_LIBRARY_PATH:
+   user_library_dirs = USER_LIBRARY_PATH.strip('"').split(":")
+   env.Append(LIBPATH = user_library_dirs)
+
+#  Could add option to add all shared libraries found in USER_LIBRARY_PATH
+#  if (USER_LIBRARY_SEARCH):
+#    for d in user_library_dirs:
+#      USER_LIBRARIES += Glob(d+"/*"+env["SHLIBSUFFIX"])
+
+if USER_LIBRARIES:
+   env.Append(LIBS = [os.path.basename(l) for l in USER_LIBRARIES])
+   env.Append(LIBPATH = [os.path.dirname(l) for l in USER_LIBRARIES])
+
+if USER_INCLUDE_PATH:
+   env.Append(CPPPATH = USER_INCLUDE_PATH.strip('"').split(":"))
+
+if USER_CCFLAGS:
+   env.Append(CCFLAGS = USER_CCFLAGS)
+
+# Linking
+
+if Fluent_arch in ["win64"]:
+#  Have to link against fluent and cortex prebuilt libraries
+
+    env.Append(LIBPATH = [Fluent_version_path, Cortex_version_path])
+    env.Append(LIBS = ["fl1500", "cx1500"])
+
+
+# udf_names.c Builder function
+
+def build_udf_names(target,source,env):
+    
+    udfs = fluent_utils.udf_names(map(str, source))
+
+    print("\nCreating "+str(target[0])+"...")
+
+    print("UDFs found:")
+    print("\n".join(("  "+define+args+";" for define,args,type,name in udfs))+"\n")
+
+    udf_names = open(str(target[0]),"w")
+
+    udf_names.write(\
+"""
+/* This file generated automatically. */
+/*          Do not modify.            */
+
+#include "udf.h"
+#include "prop.h"
+#include "dpm.h"
+
+""")
+
+    udf_names.write("\n".join(("extern "+define+args+";" for define,args,type,name in udfs))+"\n\n")
+
+    if(Fluent_arch in ["win64"] and not using_mingw):
+      udf_names.write("__declspec(dllexport) ")
+
+
+    udf_names.write("UDF_Data udf_data[] = {\n");
+
+# Function prototype here should match the one in UDF_Data struct in cudf.h 
+
+    udf_names.write((",\n").join(('{"'+name+'", (void (*)(void))'+name+', UDF_TYPE_'+type+'}' for define,args,type,name in udfs))+"\n")
+
+    udf_names.write("};\n\n");
+
+    udf_names.write("int n_udf_data = {0};\n".format(len(udfs)))
+
+    udf_names.write(\
+"""
+#include "version.h"
+
+void UDF_Inquire_Release(int *major, int *minor, int *revision)
+{
+  *major = RampantReleaseMajor;
+  *minor = RampantReleaseMinor;
+  *revision = RampantReleaseRevision;
+}
+""")
+
+    udf_names.close()
+
+
+udf_names_builder = Builder(action=build_udf_names)
+env.Append(BUILDERS={"UDFNames":udf_names_builder})
+
+env.UDFNames(target="udf_names.c", source=Glob("../../src/*.c")) # Sources in src only. "#" gives path relative to SConstruct
+
+
+# Generate shared library / DLL as libudf.so or libudf.dll
+
+libName = "udf"
+if Fluent_arch in ["win64"]:
+   libName = "libudf"
+
+
+env["STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME"] = 1 # Needed even though object files end in .os
+
+env.SharedLibrary(libName, Glob("*.c")+Glob("*.cpp")+USER_OBJECTS)

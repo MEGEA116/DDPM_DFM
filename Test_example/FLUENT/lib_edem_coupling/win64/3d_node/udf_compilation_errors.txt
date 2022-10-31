@@ -1,0 +1,46 @@
+
+Microsoft (R) 程序维护实用工具 11.00.50727.1 版
+版权所有 (C) Microsoft Corporation。保留所有权利。
+
+用于 x64 的 Microsoft (R) C/C++ 优化编译器 17.00.61030 版
+版权所有(C) Microsoft Corporation。保留所有权利。
+
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\AdaptorInterface.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\AdaptorInterface.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\compute_particle_forces.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\compute_particle_forces.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\compute_particle_heat_flux.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\compute_particle_heat_flux.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\edem_coupling.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\edem_coupling.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\locate_particles.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\locate_particles.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\particle_prototype.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\particle_prototype.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\quaternion_macros.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\quaternion_macros.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\sunflower_generators.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\sunflower_generators.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\udfParticle.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\udfParticle.h”被忽略
+用于 x64 的 Microsoft (R) C/C++ 优化编译器 17.00.61030 版
+版权所有(C) Microsoft Corporation。保留所有权利。
+
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\AdaptorInterface.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\AdaptorInterface.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\compute_particle_forces.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\compute_particle_forces.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\compute_particle_heat_flux.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\compute_particle_heat_flux.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\edem_coupling.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\edem_coupling.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\locate_particles.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\locate_particles.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\particle_prototype.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\particle_prototype.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\quaternion_macros.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\quaternion_macros.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\sunflower_generators.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\sunflower_generators.h”被忽略
+cl: 命令行 warning D9024 :无法识别的源文件类型“..\..\src\udfParticle.h”，假定为对象文件
+cl: 命令行 warning D9027 :源文件“..\..\src\udfParticle.h”被忽略

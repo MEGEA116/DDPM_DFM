@@ -1,0 +1,47 @@
+1) Set the required environment variables as in 
+  edem_cfd_adaptor_build/README.Linux:
+
+  If your local EDEM distribution is not at
+   /opt/DEMSolutions/EDEM_2.7
+
+  in the file "tools/set_edem_env_vars.csh" edit the line:
+    setenv EDEM_INSTALL_DIR /opt/DEMSolutions/EDEM_2.7
+
+  or in the file "tools/set_edem_env_vars.sh" edit the line:
+    export EDEM_INSTALL_DIR=/opt/DEMSolutions/EDEM_2.7
+
+  to match you local distributions location.
+
+  cd to the directory containing the tools and edem_cfd_adaptor_build directories
+
+  Set the required environment variables using either
+    source ./tools/set_edem_env_vars.csh
+  or
+    source ./tools/set_edem_env_vars.sh
+
+
+2) Ensure that FLUENT_INC environment variable is set to your local Fluent installation directory
+
+
+3) Install the scons utility from:
+scons.org/pages/download.html
+
+
+4) Compile the UDF
+
+Make sure the directory:
+edem_coupling_build/tools
+is in your PYTHONPATH environment variable as scons uses python files stored here.
+
+cd lib_edem_coupling
+
+and run:
+
+For EDEM 2.6
+scons dimensions=3d  USER_OBJECT_PATH=$EDEM_ADAPTOR_OBJECT_DIR   USER_LIBRARIES=$EDEM_LIBRARY_PATH/libEDEMCouplingClientV2_2_0.so
+
+For EDEM 2.7
+scons dimensions=3d  USER_OBJECT_PATH=$EDEM_ADAPTOR_OBJECT_DIR   USER_LIBRARIES=$EDEM_LIBRARY_PATH/libEDEMCouplingClientV2_3_0.so
+
+
+
